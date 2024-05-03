@@ -6,7 +6,7 @@ import os
  
 filename='data' 
 file_ext='.csv' 
-foldername = 'DataSet_3'
+foldername = 'Taprint_dataset'
 
 uniq=1
 output_path='./%s/%s(%d)%s' %(foldername,filename,uniq,file_ext)

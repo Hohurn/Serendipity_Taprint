@@ -5,11 +5,12 @@ import csv
 
 # this code makes the visual graph of each csv file and save it to each of folder
 
-folder_num = 3 # number of gestrue(number of labels)
-file_num = 15 # number of data of each gesture
+folder_num = 1 # number of gestrue(number of labels)
+file_num = 3 # number of data of each gesture
 
 for i in range (folder_num):
-    folder_name = './DataSet_%d' %(i + 1)
+    #folder_name = './DataSet_%d' %(i + 1)
+    folder_name = './Taprint_dataset'
     for j in range(file_num):
         file_path = '%s/data(%d).csv' %(folder_name, j + 1)
         f = open(file_path, 'r')
@@ -33,8 +34,10 @@ for i in range (folder_num):
         for k in range(len(ax)):
             t.append(k + 1)
         print(i)
-        saving_folder_name = './DataSet_%d_visualized' %(i + 1)
+        #saving_folder_name = './DataSet_%d_visualized' %(i + 1)
+        saving_folder_name = './Taprint_dataset_visualized'
         graph_name = '/data(%d)_graph.pdf' %(j + 1)
+
         path = saving_folder_name + graph_name
         plt.plot(t, ax, t, ay, t, az, t, gx, t, gy, t, gz)
         plt.savefig(path, format='pdf')
