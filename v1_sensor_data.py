@@ -11,8 +11,8 @@ foldername = 'DataSet_2'
 uniq=1
 output_path='./%s/%s(%d)%s' %(foldername,filename,uniq,file_ext)
 
-com = "COM4"
-baud = 9600
+com = "/dev/cu.usbmodem1101"
+baud = 115200
 x = serial.Serial(com, baud, timeout = 0.1)
 while True:
     if keyboard.read_key() == "a":
