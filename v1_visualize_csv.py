@@ -6,7 +6,7 @@ import csv
 # this code makes the visual graph of each csv file and save it to each of folder
 
 folder_num = 1 # number of gestrue(number of labels)
-file_num = 3 # number of data of each gesture
+file_num = 10 # number of data of each gesture
 
 for i in range (folder_num):
     #folder_name = './DataSet_%d' %(i + 1)
@@ -39,7 +39,7 @@ for i in range (folder_num):
         graph_name = '/data(%d)_graph.pdf' %(j + 1)
 
         path = saving_folder_name + graph_name
-        plt.plot(t, ax, t, ay, t, az, t, gx, t, gy, t, gz)
+        plt.plot(t, gx, t, gy, t, gz)
         plt.savefig(path, format='pdf')
         plt.clf()
         f.close()
