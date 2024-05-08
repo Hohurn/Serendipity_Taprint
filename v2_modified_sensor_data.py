@@ -11,10 +11,10 @@ foldername = 'Taprint_dataset'
 uniq=1
 output_path='./%s/%s(%d)%s' %(foldername,filename,uniq,file_ext)
 
-sampling_time = 8
+sampling_time = 30
 
 com = "COM4"
-baud = 9600
+baud = 115200
 x = serial.Serial(com, baud, timeout = 0.1)
 while True:
     if keyboard.read_key() == "a":
