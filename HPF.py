@@ -30,12 +30,13 @@ def main():
     filename='data' 
     file_ext='.csv'
     
-    uniq = 8
+    uniq = 8 # number of data file "data(uniq).csv" in "Taprint_dataset" folder
 
     input_path = './Taprint_dataset/%s(%d)%s' %(filename,uniq,file_ext)
 
     while os.path.exists(input_path):  
 
+        # get data from .csv file and store it to the list
         f = open(input_path,'r')
         rdr = csv.reader(f)
 
@@ -68,12 +69,10 @@ def main():
             hpf = butter_highpass_filter(temp, cutoff, Fs)
             maximum.append(max(abs(max(hpf)), abs(min(hpf))))
 
-        print(len(maximum))
-        print(len(ax))
         plt.plot(maximum)
         plt.show()
         
-
+        # codes for drawing filter applied time series data
         """
         Fs = len(az) //30
         cutoff = 10.
@@ -102,31 +101,6 @@ def main():
         plt.legend()
         plt.show() 
         """
-        """
-        # 3. 필터 적용된 FFT Plot
-        yfft = np.fft.fft(hpf)
-        yf = yfft / N
-        yf = yf[range(int(N/2))]
-        
-
-        plt.plot(freq, abs(yf), 'b')
-        plt.title("HBF")
-        plt.xlim(0, Fs / 20)
-        plt.show()
-        """
-        """
-        if uniq == 1: # control the writer mode for writing to output file
-            mode = 'w'
-        else:
-            mode = 'a'
-
-        f = open(output_path, mode)
-        writer = csv.writer(f)
-        writer.writerow(total_features)
-
-        input_path='./DataSet_%d_separated/%s(%d)%s' % (folder_number,filename,uniq,file_ext) """
-
-        #uniq+=1
         break
     
     

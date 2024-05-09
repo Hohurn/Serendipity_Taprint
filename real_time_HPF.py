@@ -3,36 +3,28 @@ import math
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+from scipy import signal
 
 #-------------------------------------------------------------------------------#
-def update_window(window, split_data, window_size): 
+def butter_highpass(cutoff, fs, order=3): # high pass filter in library scipy
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.butter(order, normal_cutoff, btype='high', analog=False)
+    return b, a
 
-    if (len(window) == window_size): # if the size of window is 60, eliminate the first elements of each lists
-        for i in range(len(window)):
-            del window[0]
-        
-
-    ax = float(split_data[0])
-    ay = float(split_data[1])
-    az = float(split_data[2])
-    gx = float(split_data[3])
-    gy = float(split_data[4])
-    gz = float(split_data[5])
+def butter_highpass_filter(data, cutoff, fs, order=3):
+    b, a = butter_highpass(cutoff, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
 
 #-------------------------------------------------------------------------------#
-def define_label(label):
-    ret = 0
-    if (label == 0):
-        ret = 1
-    else:
-        ret = 0
-    return ret
-#-------------------------------------------------------------------------------#
-def is_detected(probability):
-    if (probability > 8):
-        return True
-    else:
-        return False
+def update_window(window, az, window_size): 
+
+    if (len(window) == window_size): # if the size of window is equal to window size, eliminate the first elements of each lists
+        del window[0]
+
+    window.append(az)
+
 #-------------------------------------------------------------------------------#
 
 def main():
@@ -41,57 +33,60 @@ def main():
     window = []
     window_size = 20
 
-    # load classifier parameters
-    com = "/dev/cu.usbmodem1101"
+    # variables for serial communication
+    com = "COM4"
     baud = 115200
     x = serial.Serial(com, baud, timeout = 0.1)
 
-    time_limit = 0.333 # 20/60 seconds for one impact
+    time_limit = 0.1 # 20/60 seconds for one impact
     previous_gesture = -1
     current_gesture = -1
 
     already_detected = False
-    start_time = time.time()
+    start_time = time.time() # 
+
+    threshold = 0.1 # threshold to identify effect
+    cutoff = 10.
+    printing_number = 1
 
     while x.isOpen() is True:
         data = str(x.readline().decode('utf-8')).rstrip()
         
         if data != '':
-            split_data = data.split(',')
-            if len(split_data) != 6:
+            az = float(data)
+            update_window(window, az, window_size)
+
+            
+            if ( len( window ) < window_size ):
                 continue
-            update_window(A, G, split_data, window_size)
-            if ( len( A[0] ) < window_size ):
-                continue
-            #print(split_data)
-            # make total five sliding window and make a decision by using SVM
             
-            
-            final_window = total_features(A, G, window_size)
-            temp = np.array(final_window)
-            current_gesture = int(clf.predict(temp.reshape(1,-1))[0])
-               
-            #print(current_gesture)
-            
-            # print detection
-            #print(already_detected)
+            # apply HPF to window data
+            Fs = 210
+            hpf = butter_highpass_filter(window, cutoff, Fs)
+            value = max(abs(max(hpf)), abs(min(hpf)))
+
+            if (value > threshold):
+                current_gesture = 1 # impact is occured
+            else:
+                current_gesture = -1
+
+            # print "impacte detected" when impact is detected
             if (current_gesture != previous_gesture and (not already_detected)):
                 if (current_gesture != 0):
-                    print("Impact Detected!")
+                    print("Impact %d Detected!" %(printing_number))
+                    printing_number += 1
 
             if (current_gesture != previous_gesture):
                 already_detected = True
                 start_time = time.time()
                     
 
-            if ((time.time() - start_time) > 1 ):
+            if ((time.time() - start_time) > time_limit ):
                 already_detected = False
                 
-
             previous_gesture = current_gesture
             
             
-            
-
+        
 
 main()
