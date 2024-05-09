@@ -39,7 +39,7 @@ for i in range (folder_num):
         graph_name = '/data(%d)_graph.pdf' %(j + 1)
 
         path = saving_folder_name + graph_name
-        plt.plot(t, gx, t, gy, t, gz)
+        plt.plot(t, ax, t, ay, t, az)
         plt.savefig(path, format='pdf')
         plt.clf()
         f.close()

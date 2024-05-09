@@ -30,7 +30,7 @@ def main():
     filename='data' 
     file_ext='.csv'
     
-    uniq = 10
+    uniq = 8
 
     input_path = './Taprint_dataset/%s(%d)%s' %(filename,uniq,file_ext)
 
@@ -55,14 +55,22 @@ def main():
                 gz.append(float(line[5]))
             a += 1
 
-        temp = az[300:340]
-        print(len(az))
-        plt.plot(temp)
-        
-        
-        Fs = (len(temp) // (30*(len(temp) / len(az))))
+
+        # draw the maximum abs value of highpass filtered value respect of window length 
+        window_size = 20
+        maximum = []
         cutoff = 10.
-        plt.plot(butter_highpass_filter(temp, cutoff, Fs))
+        for i in range(len(az) - window_size):
+
+            temp = az[i : i + window_size]
+        
+            Fs = (window_size // (30*(window_size / len(az))))
+            hpf = butter_highpass_filter(temp, cutoff, Fs)
+            maximum.append(max(abs(max(hpf)), abs(min(hpf))))
+
+        print(len(maximum))
+        print(len(ax))
+        plt.plot(maximum)
         plt.show()
         
 
